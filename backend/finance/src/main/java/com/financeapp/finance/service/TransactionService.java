@@ -72,6 +72,7 @@ public class TransactionService {
         outTransaction.setDollarAmount(transferDTO.getAmount().negate());
         outTransaction.setTransactionType(TransactionType.TRANSFER);
         outTransaction.setDescription(transferDTO.getDescription());
+        LOGGER.info("Transaction from original was transferred");
 
         Transaction inTransaction = new Transaction();
         inTransaction.setAccount(destAccount);
@@ -79,6 +80,7 @@ public class TransactionService {
         inTransaction.setDollarAmount(transferDTO.getAmount());
         inTransaction.setTransactionType(TransactionType.TRANSFER);
         inTransaction.setDescription(transferDTO.getDescription());
+        LOGGER.info("Transaction from original was received");
 
         transactionRepo.save(outTransaction);
         transactionRepo.save(inTransaction);
