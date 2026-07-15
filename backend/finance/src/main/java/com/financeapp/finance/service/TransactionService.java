@@ -58,11 +58,11 @@ public class TransactionService {
         Account destAccount = accountRepo.findByAccountId(transferDTO.getDestAccountId())
                 .orElseThrow(AccountDoesNotExistException::new);
 
-        if (transferDTO.getAmount() != null && originalAccount.equals(destAccount)) {
+        if (originalAccount != null && transferDTO.getAmount() != null){
             originalAccount.setBalance(originalAccount.getBalance().subtract(transferDTO.getAmount()));
         }
 
-        if (transferDTO.getAmount() != null && destAccount.equals(originalAccount)) {
+        if (destAccount != null && transferDTO.getAmount() != null) {
             destAccount.setBalance(destAccount.getBalance().add(transferDTO.getAmount()));
         }
 
