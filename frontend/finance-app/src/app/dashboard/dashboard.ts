@@ -6,7 +6,6 @@ import { FormGroup, ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { AccountService } from '../services/account.service';
 import { ToastrService } from 'ngx-toastr';
 import { AuthService } from '../services/auth.service';
-import { TransactionService } from '../services/transaction.service';
 import { Account } from '../models/account';
 
 @Component({
@@ -21,8 +20,6 @@ export class DashboardComponent {
   totalBalance: number = 0;
   userName: string = '';
   private userId: number = 0;
-  private accountId: number = 0;
-  private transactionId: number = 0;
   showAddModal: boolean = false;
   showDeleteModal: boolean = false;
   accountToDeleteId: number | null = null;
@@ -41,7 +38,6 @@ export class DashboardComponent {
   constructor(
     private authService: AuthService,
     private accountService: AccountService,
-    private transactionService: TransactionService,
     private toastr: ToastrService,
     private cdr: ChangeDetectorRef,
     private ngZone: NgZone,
@@ -54,7 +50,6 @@ export class DashboardComponent {
       this.userName = user.firstName;
       this.userId = user.userId ?? 0;
       this.loadAccounts();
-      this.transfer(this.transactionId, this.accountId);
     }
   }
 
@@ -119,25 +114,6 @@ export class DashboardComponent {
         });
       }
     });
-  }
-
-  transfer(transactionId: number, accountId: number) {
-    this.transactionService.getTransactionByTransactionId(transactionId).subscribe({
-      next: (retrieveId) => {
-        this.ngZone.run(() => {
-          console.log('ID available', retrieveId);
-          this.isLoading = false;
-        })
-      },
-      error: (error: HttpErrorResponse) => {
-        this.ngZone.run(() => {
-          console.error('Error retrieving ID: ', error);
-          this.isLoading = false;
-          this.cdr.detectChanges();
-        })
-      }
-    })
-    this.accountId = accountId;
   }
 
   private interestAccounts = ['CREDIT_CARD', 'PERSONAL_LOAN', 'CAR_LOAN', 'AFFIRM', 'AFTER_PAY', 'KLARNA', 'SCHOOL_LOAN'];
