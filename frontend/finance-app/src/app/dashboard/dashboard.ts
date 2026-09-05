@@ -25,7 +25,7 @@ import { Account } from '../models/account';
 
   <div class="dashboard-content">
     <div class="dashboard-header">
-      <h1>Finance Dashboard</h1>
+      <h1> {{ userName }}, Finance Dashboard</h1>
       <p>Manage your money</p>
     </div>
       <!-- Accounts List Card -->
@@ -54,7 +54,7 @@ import { Account } from '../models/account';
       <!-- Add Account Button Card -->
       <div class="dashboard-card add-account-card">
         <h3>Add New Account</h3>
-        <p>Simply add the balance of your bank accounts, credit cards, loans, investments, and other financial assets
+        <p>Simply add the balance of your bank accounts, credit cards, loans, investments, and other financial assets to track
         </p>
         <button class="btn-add-account" (click)="openAddAccountModal()">+ Add Account</button>
       </div>
@@ -90,9 +90,9 @@ import { Account } from '../models/account';
 
     @if (account.accountType) {
     <div class="form-group">
-      <label for="nickname">Account Nickname</label>
+      <label for="nickname">Account Name</label>
       <input type="text" id="nickname" [(ngModel)]="account.nickname" class="form-control"
-        placeholder="e.g. Account Name">
+        placeholder="e.g. exNameAccount">
     </div>
     <div class="form-group">
       <label for="balance">Current Balance</label>
@@ -118,7 +118,7 @@ import { Account } from '../models/account';
       <label for="minimumPayment">Minimum Payment</label>
       <input type="text" id="minimumPayment" [ngModel]="formattedMinPayment" (input)="formatMinPayment($event)"
         class="form-control" placeholder="$0.00">
-      <small class="text-muted">Minimum verified monthly payment</small>
+      <small class="text-muted">Minimum monthly payment</small>
     </div>
     }
     <div class="modal-actions">
@@ -240,18 +240,11 @@ import { Account } from '../models/account';
   background: rgba(20, 20, 20, 0.6);
   -webkit-backdrop-filter: blur(12px);
   backdrop-filter: blur(12px);
-  padding: 2rem;
+  padding: 1rem;
   border-radius: 20px;
   border: 1px solid rgba(255, 255, 255, 0.05);
-  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   position: relative;
   overflow: hidden;
-}
-
-.dashboard-card:hover {
-  transform: translateY(-6px);
-  border-color: rgba(255, 255, 255, 0.1);
-  box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.5);
 }
 
 /* Subtle gradient glow on hover */
@@ -414,21 +407,15 @@ import { Account } from '../models/account';
 .btn-add-account {
   background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
   color: #fff;
-  padding: 0.75rem 1.5rem;
+  padding: 0.75rem 1rem;
   border-radius: 10px;
   border: none;
   font-size: 0.95rem;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.3s ease;
   margin-top: 1rem;
-  width: 100%;
-}
-
-.btn-add-account:hover {
-  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
-  transform: translateY(-2px);
-  box-shadow: 0 10px 30px -10px rgba(220, 38, 38, 0.5);
+  width: 25%;
+  display-flex: center;
 }
 
 .add-account-card p {

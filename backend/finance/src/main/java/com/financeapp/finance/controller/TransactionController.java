@@ -30,13 +30,6 @@ public class TransactionController {
         return transactionService.getTransactionByTransactionId(transactionId);
     }
 
-
-    @PostMapping("/transfer")
-    public ResponseEntity<TransactionDTO> transfer(@Valid @RequestBody TransferDTO transferDTO) {
-        Transaction transfer = transactionService.transfer(transferDTO);
-        return ResponseEntity.status(HttpStatus.CREATED).body(mapToDTO(transfer));
-    }
-
     private TransactionDTO mapToDTO(Transaction transaction) {
         TransactionDTO dto = new TransactionDTO();
         dto.setTransactionId(transaction.getTransactionId());

@@ -5,7 +5,7 @@ import { RouterModule } from '@angular/router';
   selector: 'app-home',
   standalone: true,
   imports: [RouterModule],
-  templateUrl: `<div class="container">
+  template: `<div class="container">
     <nav class="navbar">
         <div class="nav-brand">
             <h2>Finance <span>Tracker</span></h2>

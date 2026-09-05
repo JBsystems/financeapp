@@ -8,7 +8,7 @@ import { CommonModule } from '@angular/common';
   selector: 'app-login',
   standalone: true,
   imports: [RouterModule, ReactiveFormsModule, CommonModule],
-  templateUrl: `<div class="auth-container">
+  template: `<div class="auth-container">
   <div class="auth-card">
   <div class="back-home">
   <a routerLink="/" class="home-link">← Back to Home</a>
