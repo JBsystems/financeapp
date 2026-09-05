@@ -50,44 +50,6 @@ public class TransactionService {
         return transaction;
     }
 
-    @Transactional
-    public Transaction transfer(TransferDTO transferDTO) {
-
-        Account originalAccount = accountRepo.findByAccountId(transferDTO.getSourceAccountId())
-                .orElseThrow(AccountDoesNotExistException::new);
-        Account destAccount = accountRepo.findByAccountId(transferDTO.getDestAccountId())
-                .orElseThrow(AccountDoesNotExistException::new);
-
-        if (originalAccount != null && transferDTO.getAmount() != null){
-            originalAccount.setBalance(originalAccount.getBalance().subtract(transferDTO.getAmount()));
-        }
-
-        if (destAccount != null && transferDTO.getAmount() != null) {
-            destAccount.setBalance(destAccount.getBalance().add(transferDTO.getAmount()));
-        }
-
-        Transaction outTransaction = new Transaction();
-        outTransaction.setAccount(originalAccount);
-        outTransaction.setUser(originalAccount.getUser());
-        outTransaction.setDollarAmount(transferDTO.getAmount().negate());
-        outTransaction.setTransactionType(TransactionType.TRANSFER);
-        outTransaction.setDescription(transferDTO.getDescription());
-        LOGGER.info("Transaction from original was transferred");
-
-        Transaction inTransaction = new Transaction();
-        inTransaction.setAccount(destAccount);
-        inTransaction.setUser(destAccount.getUser());
-        inTransaction.setDollarAmount(transferDTO.getAmount());
-        inTransaction.setTransactionType(TransactionType.TRANSFER);
-        inTransaction.setDescription(transferDTO.getDescription());
-        LOGGER.info("Transaction from original was received");
-
-        transactionRepo.save(outTransaction);
-        transactionRepo.save(inTransaction);
-
-        accountRepo.save(originalAccount);
-        accountRepo.save(destAccount);
-
-        return outTransaction;
+    // public Transaction transfer(TransferDTO transferDTO) {
     }
 }

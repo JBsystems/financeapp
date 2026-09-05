@@ -1,7 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Transaction } from '../models/transaction';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -11,12 +9,12 @@ export class TransactionService {
 
   constructor(private http: HttpClient) { }
 
-  getTransactionByTransactionId(transactionId: number): Observable<Transaction> {
-    return this.http.get<Transaction>(`${this.apiUrl}/transaction/${transactionId}`);
-  }
+  // getTransactionByTransactionId(transactionId: number): Observable<Transaction> {
+    // return this.http.get<Transaction>(`${this.apiUrl}/transaction/${transactionId}`);
+  // }
 
-  transfer(transactionId: number): Observable<Transaction> {
-    return this.http.post<Transaction>(this.apiUrl, transactionId);
-  }
+  // transfer(transactionId: number): Observable<Transaction> {
+    // return this.http.post<Transaction>(this.apiUrl, transactionId);
+  // }
 
 }
