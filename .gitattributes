@@ -1,0 +1,13 @@
+# Exclude standard Angular build and dependency folders
+**/node_modules/* linguist-vendored
+**/dist/* linguist-vendored
+**/.angular/* linguist-vendored
+
+# Exclude Java build directories
+**/target/* linguist-vendored
+**/build/* linguist-vendored
+
+# Optional: If you use a lot of raw CSS/HTML templates that inflate stats,
+# you can mark them as generated or documentation so they don't count towards languages
+*.css linguist-documentation
+*.html linguist-documentation
