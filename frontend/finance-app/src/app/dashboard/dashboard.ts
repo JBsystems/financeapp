@@ -12,7 +12,133 @@ import { Account } from '../models/account';
   selector: 'app-dashboard',
   standalone: true,
   imports: [RouterModule, CommonModule, ReactiveFormsModule, FormsModule],
-  templateUrl: './dashboard.html',
+  templateUrl: `<div class="dashboard-container">
+  <nav class="dashboard-nav">
+    <div class="nav-brand">
+      <h2>Personal Finance Tracker</h2>
+    </div>
+    <div class="nav-user">
+      <span>Welcome back, {{ userName }}!</span>
+      <a routerLink="/" class="btn-logout">Logout</a>
+    </div>
+  </nav>
+
+  <div class="dashboard-content">
+    <div class="dashboard-header">
+      <h1>Finance Dashboard</h1>
+      <p>Manage your money</p>
+    </div>
+
+      <!-- Accounts List Card -->
+      <div class="dashboard-card">
+        <h3>Accounts</h3>
+        @if (accounts.length > 0) {
+        <div class="accounts-list">
+          @for (account of accounts; track account.accountId) {
+          <div class="account-item">
+            <div class="account-info">
+              <span class="account-name">{{ account.nickname }}</span>
+            </div>
+            <div class="account-actions">
+              <span class="account-balance">{{ account.balance }}</span>
+              <button class="btn-delete" (click)="deleteAccountModal(account.accountId!)" title="Delete Account">
+                <i class="fas fa-trash"></i> Delete
+              </button>
+            </div>
+          </div>
+          }
+        </div>
+        } @else {
+        <p class="no-data">No accounts to show. Add your first of many accounts!</p>
+        }
+      </div>
+
+      <!-- Add Account Button Card -->
+      <div class="dashboard-card add-account-card">
+        <h3>Add New Account</h3>
+        <p>Simply add the balance of your bank accounts, credit cards, loans, investments, and other financial assets
+        </p>
+        <button class="btn-add-account" (click)="openAddAccountModal()">+ Add Account</button>
+      </div>
+    </div>
+  </div>
+
+<!-- Delete Confirmation Modal -->
+@if (showDeleteModal) {
+<div class="modal-overlay">
+  <div class="modal-content">
+    <h3>Delete Account</h3>
+    <p>This action cannot be undone once deleted.</p>
+    <div class="modal-actions">
+      <button class="btn-cancel" (click)="showDeleteModal = false">Cancel</button>
+      <button class="btn-confirm-delete" (click)="deleteAccount(accountToDeleteId!)">Delete</button>
+    </div>
+  </div>
+</div>
+}
+
+<!-- Add Account Modal -->
+@if (showAddModal && account) {
+<div class="modal-overlay">
+  <div class="modal-content">
+    <h3>Add New Account</h3>
+    <div class="form-group">
+      <label for="accountType">Account Type</label>
+      <select id="accountType" [(ngModel)]="account.accountType" class="form-control">
+        <option value="" disabled selected>Select an account type</option>
+        @for (type of accountTypes; track type) {
+        <option [value]="type">{{ type.replace('_', ' ') | titlecase }}</option>
+        }
+      </select>
+    </div>
+
+    @if (account.accountType) {
+    <div class="form-group">
+      <label for="nickname">Account Nickname</label>
+      <input type="text" id="nickname" [(ngModel)]="account.nickname" class="form-control"
+        placeholder="e.g. Account Name">
+    </div>
+    <div class="form-group">
+      <label for="balance">Current Balance</label>
+      <input type="text" id="balance" [ngModel]="formattedBalance" (input)="formatBalance($event)" class="form-control"
+        placeholder="$0.00">
+    </div>
+
+    @if (showDueDay(account.accountType)) {
+    <div class="form-group conditional">
+      <label for="dueDay">Due Day</label>
+      <input type="number" id="dueDay" [(ngModel)]="account.dueDay" class="form-control" placeholder="Day (1-31)"
+        min="1" max="31">
+      <small class="text-muted">Day of the month payment is due</small>
+    </div>
+    }
+
+    @if (showInterestAccountFields(account.accountType)) {
+    <div class="form-group conditional">
+      <label for="interestRate">Interest Rate (%)</label>
+      <input type="number" id="interestRate" [(ngModel)]="account.interestRate" class="form-control" placeholder="0.00">
+    </div>
+    <div class="form-group conditional">
+      <label for="minimumPayment">Minimum Payment</label>
+      <input type="text" id="minimumPayment" [ngModel]="formattedMinPayment" (input)="formatMinPayment($event)"
+        class="form-control" placeholder="$0.00">
+      <small class="text-muted">Minimum verified monthly payment</small>
+    </div>
+    }
+    <div class="modal-actions">
+      <button class="btn-cancel" (click)="closeAddAccountModal()">Cancel</button>
+      <button class="btn-confirm-add" (click)="addAccount(account!)" [disabled]="isLoading || !account.accountType">
+        @if (isLoading) { Saving... } @else { Save Account }
+      </button>
+    </div>
+    } @else {
+    <div class="modal-actions">
+      <button class="btn-cancel" (click)="closeAddAccountModal()">Cancel</button>
+    </div>
+    }
+  </div>
+</div>
+}`,
   styleUrl: './dashboard.css'
 })
 export class DashboardComponent {
