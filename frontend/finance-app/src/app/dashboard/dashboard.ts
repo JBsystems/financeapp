@@ -1,8 +1,8 @@
-import { Component, ChangeDetectorRef, NgZone, Inject } from '@angular/core';
+import { Component, ChangeDetectorRef, NgZone } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
 import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { FormGroup, ReactiveFormsModule, FormsModule } from '@angular/forms';
+import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { AccountService } from '../services/account.service';
 import { ToastrService } from 'ngx-toastr';
 import { AuthService } from '../services/auth.service';
@@ -39,7 +39,7 @@ import { Account } from '../models/account';
               <span class="account-name">{{ account.nickname }}</span>
             </div>
             <div class="account-actions">
-              <span class="account-balance">{{ account.balance }}</span>
+              <span class="account-balance">{{ account.balance | currency }}</span>
               <button class="btn-delete" (click)="deleteAccountModal(account.accountId!)" title="Delete Account">
                 <i class="fas fa-trash"></i> Delete
               </button>
@@ -240,7 +240,7 @@ import { Account } from '../models/account';
   background: rgba(20, 20, 20, 0.6);
   -webkit-backdrop-filter: blur(12px);
   backdrop-filter: blur(12px);
-  padding: 1rem;
+  padding: 2rem;
   border-radius: 20px;
   border: 1px solid rgba(255, 255, 255, 0.05);
   position: relative;
@@ -415,7 +415,6 @@ import { Account } from '../models/account';
   cursor: pointer;
   margin-top: 1rem;
   width: 25%;
-  display-flex: center;
 }
 
 .add-account-card p {
@@ -651,7 +650,6 @@ export class DashboardComponent {
   showAddModal: boolean = false;
   showDeleteModal: boolean = false;
   accountToDeleteId: number | null = null;
-  accountForm!: FormGroup;
   submitted = false;
 
   account: Account | null = null;
@@ -728,7 +726,7 @@ export class DashboardComponent {
         this.ngZone.run(() => {
           console.log(response);
           this.isLoading = false;
-          this.toastr.success('Account added successfully');
+          this.toastr.success('Account added');
           this.loadAccounts();
           this.cdr.detectChanges();
         });
@@ -751,7 +749,6 @@ export class DashboardComponent {
       userId: this.userId,
       accountType: '' as Account['accountType'],
       balance: 0,
-      amount: 0,
       nickname: ''
     } as Account;
     this.formattedBalance = '';
@@ -781,7 +778,7 @@ export class DashboardComponent {
       next: () => {
         this.showDeleteModal = false;
         this.loadAccounts();
-        this.toastr.success('Account deleted successfully', 'Success');
+        // this.toastr.success('Account deleted successfully');
       },
       error: (error: any) => {
         console.error('Error deleting account:', error);
@@ -803,7 +800,6 @@ export class DashboardComponent {
     input.value = formatted;
     if (this.account) {
       this.account.balance = raw;
-      this.account.amount = raw;
     }
   }
 
