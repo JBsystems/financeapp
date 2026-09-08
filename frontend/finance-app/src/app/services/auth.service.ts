@@ -11,7 +11,7 @@ import { map } from 'rxjs/operators';
 export class AuthService {
     private apiUrl = 'http://localhost:8080/api';
     private currentUserSubject: BehaviorSubject<User | null>;
-    private isBrowser: boolean;
+    private readonly isBrowser: boolean;
 
     public currentUser$: Observable<User | null>;
 
@@ -28,17 +28,6 @@ export class AuthService {
 
         this.currentUserSubject = new BehaviorSubject<User | null>(storedUser);
         this.currentUser$ = this.currentUserSubject.asObservable();
-    }
-
-    register(user: User): Observable<User> {
-        return this.http.post<User>(`${this.apiUrl}/v1/users`, user);
-    }
-
-    logout(): void {
-        if (this.isBrowser) {
-            sessionStorage.removeItem('currentUser');
-        }
-        this.currentUserSubject.next(null);
     }
 
     public get currentUser(): User | null {
