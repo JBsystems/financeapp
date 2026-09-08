@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { RouterModule, Router } from '@angular/router';
-import { FormBuilder, FormGroup, FormControl, Validators, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { AuthService } from '../services/auth.service';
 import { CommonModule } from '@angular/common';
 
@@ -11,11 +11,11 @@ import { CommonModule } from '@angular/common';
   template: `<div class="auth-container">
   <div class="auth-card">
   <div class="back-home">
-  <a routerLink="/" class="home-link">← Back to Home</a>
+  <a routerLink="/" class="home-link">◀ Back to Home</a>
 </div>
 <div class="auth-header">
-  <h1>Welcome</h1>
-<p>Sign into your account</p>
+  <h1>Welcome Back</h1>
+<p>Sign In</p>
 </div>
 
 <form class="auth-form" [formGroup]="loginForm" (ngSubmit)="userLogin()">
@@ -127,7 +127,6 @@ import { CommonModule } from '@angular/common';
 }
 
 .auth-header h1 {
-  color: var(--text-white);
   font-size: 2.5rem;
   font-weight: 700;
   letter-spacing: -0.02em;

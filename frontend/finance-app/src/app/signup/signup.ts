@@ -11,11 +11,11 @@ import { CommonModule } from '@angular/common';
   template: `<div class="auth-container">
   <div class="auth-card">
     <div class="back-home">
-      <a routerLink="/" class="home-link">← Back to Home</a>
+      <a routerLink="/" class="home-link">◀ Back to Home</a>
     </div>
     <div class="auth-header">
       <h1>Create Your Account</h1>
-      <p>Let's Start Managing Your Money</p>
+      <p>Start Managing Your Money</p>
     </div>
 
     <form class="auth-form" [formGroup]="signupForm" (ngSubmit)="signupUser()">
@@ -146,7 +146,6 @@ import { CommonModule } from '@angular/common';
 }
 
 .auth-header h1 {
-  color: var(--text-white);
   font-size: 2.5rem;
   font-weight: 700;
   letter-spacing: -0.02em;
