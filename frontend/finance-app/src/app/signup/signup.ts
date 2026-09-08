@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
-import { RouterModule } from '@angular/router';
+import { RouterModule, Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+import { AuthService } from '../services/auth.service';
 import { CommonModule } from '@angular/common';
 
 @Component({
@@ -14,10 +15,10 @@ import { CommonModule } from '@angular/common';
     </div>
     <div class="auth-header">
       <h1>Create Your Account</h1>
-      <p>Start Managing Your Money</p>
+      <p>Let's Start Managing Your Money</p>
     </div>
 
-    <form class="auth-form">
+    <form class="auth-form" [formGroup]="signupForm" (ngSubmit)="signupUser()">
       <div class="form-group">
         <label for="firstName">First Name</label>
         <input type="text" id="firstName" formControlName="firstName" placeholder="First Name">
@@ -287,6 +288,8 @@ export class SignupComponent {
 
   constructor(
     private fb: FormBuilder,
+    private authService: AuthService,
+    private router: Router
   ) {
     this.signupForm = this.fb.group({
       firstName: ['', Validators.required],
@@ -296,5 +299,20 @@ export class SignupComponent {
       username: ['', [Validators.required, Validators.minLength(5)]],
       password: ['', [Validators.required, Validators.minLength(6)]]
     });
+  }
+
+  signupUser() {
+    if (this.signupForm.valid) {
+      this.authService.register(this.signupForm.value).subscribe({
+        next: (response) => {
+          console.log('User Registered!', response);
+          this.router.navigate(['/login']);
+        },
+        error: (error) => {
+          console.error('Registration failed', error);
+          this.errorMessage = 'Registration failed. Please try again.';
+        }
+      });
+    }
   }
 }

@@ -30,6 +30,10 @@ export class AuthService {
         this.currentUser$ = this.currentUserSubject.asObservable();
     }
 
+    register(user: User): Observable<User> {
+        return this.http.post<User>(`${this.apiUrl}/v1/users`, user);
+    }
+
     public get currentUser(): User | null {
         return this.currentUserSubject.value;
     }
