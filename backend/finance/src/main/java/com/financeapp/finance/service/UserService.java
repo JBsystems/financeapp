@@ -16,9 +16,6 @@ import com.financeapp.finance.repositories.UserRepository;
 @Service
 public class UserService {
 
-    // TODO: Add updateUser() method for profile updates
-    // TODO: Add deleteUser() method
-
     private final UserRepository userRepo;
     private final PasswordEncoder passwordEncoder;
     private static final Logger LOGGER = LoggerFactory.getLogger(UserService.class);
@@ -40,8 +37,7 @@ public class UserService {
         return userRepo.findByEmail(email).orElseThrow(EmailDoesNotExistException::new);
     }
 
-    public User createUser(String firstName, String lastName, String username, String email, String password,
-            String phone) {
+    public User createUser(String firstName, String lastName, String username, String email, String password) {
 
         if (userRepo.findByEmail(email).isPresent()) {
             throw new EmailAlreadyExistsException("This Email already exists");
@@ -58,10 +54,9 @@ public class UserService {
         newUser.setUsername(username);
         newUser.setEmail(email);
         newUser.setPassword(passwordEncoder.encode(password));
-        newUser.setPhone(phone);
         userRepo.save(newUser);
 
-        LOGGER.info("Success user created: {}", newUser);
+        LOGGER.info("Success new user created: {}", newUser);
 
         return newUser;
     }

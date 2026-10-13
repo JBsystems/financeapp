@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -40,7 +41,6 @@ public class AccountController {
                 accountDTO.getAccountId(),
                 user,
                 accountDTO.getAccountType(),
-                accountDTO.getAmount(),
                 accountDTO.getBalance(),
                 accountDTO);
 
@@ -65,13 +65,20 @@ public class AccountController {
         return ResponseEntity.noContent().build();
     }
 
+    @PutMapping("/{accountId}")
+    public ResponseEntity<AccountDTO> editAccount(@Valid @RequestBody AccountDTO accountDTO) {
+
+        Account updatedAccount = accountService.editAccount(accountDTO.getBalance());
+
+        return new ResponseEntity<>(mapToDTO(updatedAccount), HttpStatus.OK);
+    }
+
 
     private AccountDTO mapToDTO(Account account) {
         AccountDTO dto = new AccountDTO();
         dto.setAccountId(account.getAccountId());
         dto.setUserId(account.getUser().getUserId());
         dto.setBalance(account.getBalance());
-        dto.setAmount(account.getAmount());
         dto.setAccountType(account.getAccountType());
         dto.setNickname(account.getNickname());
         dto.setInterestRate(account.getInterestRate());

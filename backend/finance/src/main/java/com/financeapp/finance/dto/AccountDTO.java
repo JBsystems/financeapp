@@ -12,7 +12,6 @@ public class AccountDTO {
     private Long accountId;
     private Long userId;
     private BigDecimal balance;
-    private BigDecimal amount;
     @NotNull(message = "Account Type is required")
     private AccountType accountType;
     private String nickname;

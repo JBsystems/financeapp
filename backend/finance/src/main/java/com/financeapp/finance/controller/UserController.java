@@ -32,8 +32,7 @@ public class UserController {
                 userDTO.getLastName(),
                 userDTO.getUsername(),
                 userDTO.getEmail(),
-                userDTO.getPassword(),
-                userDTO.getPhone());
+                userDTO.getPassword());
         return new ResponseEntity<>(mapToDTO(createdUser), HttpStatus.CREATED);
     }
 
@@ -50,7 +49,6 @@ public class UserController {
         dto.setLastName(user.getLastName());
         dto.setUsername(user.getUsername());
         dto.setEmail(user.getEmail());
-        dto.setPhone(user.getPhone());
         return dto;
     }
 }

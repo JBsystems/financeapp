@@ -37,14 +37,13 @@ public class AccountService {
     }
 
     @org.springframework.transaction.annotation.Transactional
-    public Account createAccount(Long accountId, User user, AccountType accountType, BigDecimal amount,
+    public Account createAccount(Long accountId, User user, AccountType accountType,
             BigDecimal balance, AccountDTO dto) {
         Account newAccount = new Account();
 
         newAccount.setAccountId(accountId);
         newAccount.setUser(user);
         newAccount.setAccountType(accountType);
-        newAccount.setAmount(amount);
         newAccount.setBalance(balance);
         newAccount.setNickname(dto.getNickname());
         newAccount.setInterestRate(dto.getInterestRate());
@@ -81,5 +80,18 @@ public class AccountService {
         }
         accountRepo.deleteById(accountId);
         LOGGER.info("Account {} deleted successfully", accountId);
+    }
+
+    // Updates the specific account the user wants to edit
+    @org.springframework.transaction.annotation.Transactional
+    public Account editAccount(BigDecimal balance) {
+        Account updateAccount = new Account();
+
+        updateAccount.setBalance(balance);
+
+        Account updatedAccount = accountRepo.save(updateAccount);
+        LOGGER.info("Users account updated");
+
+        return updatedAccount;
     }
 }

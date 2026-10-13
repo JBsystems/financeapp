@@ -11,7 +11,7 @@ import { CommonModule } from '@angular/common';
   template: `<div class="auth-container">
   <div class="auth-card">
   <div class="back-home">
-  <a routerLink="/" class="home-link">◀ Back to Home</a>
+  <a routerLink="/" class="home-link">Back to Home</a>
 </div>
 <div class="auth-header">
   <h1>Welcome Back</h1>

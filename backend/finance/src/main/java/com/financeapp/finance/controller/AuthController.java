@@ -34,7 +34,6 @@ public class AuthController {
         dto.setLastName(user.getLastName());
         dto.setUsername(user.getUsername());
         dto.setEmail(user.getEmail());
-        dto.setPhone(user.getPhone());
         return dto;
     }
 }
