@@ -31,7 +31,7 @@ export class AuthService {
     }
 
     register(user: User): Observable<User> {
-        return this.http.post<User>(`${this.apiUrl}/v1/users`, user);
+        return this.http.post<User>(`${this.apiUrl}/auth`, user);
     }
 
     public get currentUser(): User | null {

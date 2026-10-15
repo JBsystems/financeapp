@@ -40,11 +40,6 @@ import { CommonModule } from '@angular/common';
       </div>
 
       <div class="form-group">
-        <label for="phone">Phone</label>
-        <input type="text" id="phone" formControlName="phone" placeholder="Phone Number">
-      </div>
-
-      <div class="form-group">
         <label for="password">Password</label>
         <input type="password" id="password" formControlName="password" placeholder="Enter a Password">
       </div>
@@ -294,7 +289,6 @@ export class SignupComponent {
       firstName: ['', Validators.required],
       lastName: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
-      phone: ['', Validators.required],
       username: ['', [Validators.required, Validators.minLength(5)]],
       password: ['', [Validators.required, Validators.minLength(6)]]
     });

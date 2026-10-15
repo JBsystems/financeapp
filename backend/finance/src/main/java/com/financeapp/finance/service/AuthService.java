@@ -15,7 +15,7 @@ public class AuthService {
 
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepo;
-    private static final Logger LOGGER = LoggerFactory.getLogger(AccountService.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(AuthService.class);
 
     public AuthService(UserRepository userRepo, PasswordEncoder passwordEncoder) {
         this.userRepo = userRepo;

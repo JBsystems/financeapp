@@ -778,7 +778,6 @@ export class DashboardComponent {
       next: () => {
         this.showDeleteModal = false;
         this.loadAccounts();
-        // this.toastr.success('Account deleted successfully');
       },
       error: (error: any) => {
         console.error('Error deleting account:', error);
