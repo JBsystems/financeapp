@@ -2,6 +2,7 @@ package com.financeapp.finance.controller;
 
 import java.util.List;
 
+import com.financeapp.finance.service.AuthService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -17,7 +18,6 @@ import com.financeapp.finance.dto.AccountDTO;
 import com.financeapp.finance.model.Account;
 import com.financeapp.finance.model.User;
 import com.financeapp.finance.service.AccountService;
-import com.financeapp.finance.service.UserService;
 
 import jakarta.validation.Valid;
 
@@ -26,16 +26,16 @@ import jakarta.validation.Valid;
 public class AccountController {
 
     private final AccountService accountService;
-    private final UserService userService;
+    private final AuthService authService;
 
-    public AccountController(AccountService accountService, UserService userService) {
+    public AccountController(AccountService accountService, AuthService authService) {
         this.accountService = accountService;
-        this.userService = userService;
+        this.authService = authService;
     }
 
     @PostMapping
     public ResponseEntity<AccountDTO> createAccount(@Valid @RequestBody AccountDTO accountDTO) {
-        User user = userService.getUserById(accountDTO.getUserId());
+        User user = authService.getUserById(accountDTO.getUserId());
 
         Account createdAccount = accountService.createAccount(
                 accountDTO.getAccountId(),

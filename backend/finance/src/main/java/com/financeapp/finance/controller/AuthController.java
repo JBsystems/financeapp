@@ -1,10 +1,9 @@
 package com.financeapp.finance.controller;
 
+import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.financeapp.finance.dto.LoginDTO;
 import com.financeapp.finance.dto.UserDTO;
@@ -19,6 +18,23 @@ public class AuthController {
 
     public AuthController(AuthService authService) {
         this.authService = authService;
+    }
+
+    @PostMapping
+    public ResponseEntity<UserDTO> createUser(@Valid @RequestBody UserDTO userDTO) {
+        User createdUser = authService.createUser(
+                userDTO.getFirstName(),
+                userDTO.getLastName(),
+                userDTO.getUsername(),
+                userDTO.getEmail(),
+                userDTO.getPassword());
+        return new ResponseEntity<>(mapToDTO(createdUser), HttpStatus.CREATED);
+    }
+
+    @GetMapping("/profile/{email}")
+    public ResponseEntity<UserDTO> getUserByEmail(@PathVariable("email") String email) {
+        User user = authService.getUserByEmail(email);
+        return ResponseEntity.ok(mapToDTO(user));
     }
 
     @PostMapping("/login")

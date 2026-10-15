@@ -3,11 +3,14 @@ package com.financeapp.finance.service;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.Optional;
 
+import com.financeapp.finance.exception.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -17,7 +20,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.financeapp.finance.dto.LoginDTO;
-import com.financeapp.finance.exception.InvalidCredentialsException;
 import com.financeapp.finance.model.User;
 import com.financeapp.finance.repositories.UserRepository;
 
@@ -46,6 +48,72 @@ public class AuthServiceTest {
         loginDTO = new LoginDTO();
         loginDTO.setUsername("testuser");
         loginDTO.setPassword("rawPassword");
+    }
+
+    @Test
+    void getUserById_WhenExists_ReturnUser() {
+        when(userRepo.findById(1L)).thenReturn(Optional.of(testUser));
+
+        User result = authService.getUserById(1L);
+
+        assertNotNull(result);
+        assertEquals(1L, result.getUserId());
+        verify(userRepo).findById(1L);
+    }
+
+    @Test
+    void getUserById_WhenNotExists_ThrowException() {
+        when(userRepo.findById(1L)).thenReturn(Optional.empty());
+
+        assertThrows(UserDoesNotExistException.class, () -> authService.getUserById(1L));
+    }
+
+    @Test
+    void getUserByEmail_WhenExists_ReturnUser() {
+        when(userRepo.findByEmail("test@example.com")).thenReturn(Optional.of(testUser));
+
+        User result = authService.getUserByEmail("test@example.com");
+
+        assertNotNull(result);
+        assertEquals("test@example.com", result.getEmail());
+    }
+
+    @Test
+    void getUserByEmail_WhenNotExists_ThrowException() {
+        when(userRepo.findByEmail("unknown@example.com")).thenReturn(Optional.empty());
+
+        assertThrows(EmailDoesNotExistException.class, () -> authService.getUserByEmail("unknown@example.com"));
+    }
+
+    @Test
+    void createUser_Success() {
+        when(userRepo.findByEmail(anyString())).thenReturn(Optional.empty());
+        when(userRepo.findByUsername(anyString())).thenReturn(Optional.empty());
+        when(passwordEncoder.encode(anyString())).thenReturn("encodedPassword");
+        when(userRepo.save(any(User.class))).thenReturn(testUser);
+
+        User result = authService.createUser("John", "Doe", "newuser", "new@example.com", "password");
+
+        assertNotNull(result);
+        assertEquals("encodedPassword", result.getPassword());
+        verify(userRepo).save(any(User.class));
+    }
+
+    @Test
+    void createUser_EmailExists_ThrowException() {
+        when(userRepo.findByEmail("test@example.com")).thenReturn(Optional.of(testUser));
+
+        assertThrows(EmailAlreadyExistsException.class,
+                () -> authService.createUser("John", "Doe", "newuser", "test@example.com", "password"));
+    }
+
+    @Test
+    void createUser_UsernameExists_ThrowException() {
+        when(userRepo.findByEmail("new@example.com")).thenReturn(Optional.empty());
+        when(userRepo.findByUsername("testuser")).thenReturn(Optional.of(testUser));
+
+        assertThrows(UsernameAlreadyExistsException.class,
+                () -> authService.createUser("John", "Doe", "testuser", "new@example.com", "password"));
     }
 
     @Test
