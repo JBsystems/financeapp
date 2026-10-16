@@ -1,3 +1,5 @@
+// This will be implemented after a couple of necessary code changes and needed features
+/*
 export interface Transaction {
   transactionId?: number;
   userId?: number;
@@ -5,3 +7,4 @@ export interface Transaction {
   description: string;
   accountId?: number;
 }
+*/
