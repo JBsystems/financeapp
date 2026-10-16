@@ -22,4 +22,8 @@ export class AccountService {
     deleteAccount(accountId: number): Observable<void> {
         return this.http.delete<void>(`${this.apiUrl}/${accountId}`);
     }
+
+    editAccount(accountId: number, balance:number): Observable<any> {
+      return this.http.put(`${this.apiUrl}/${accountId}`, balance);
+    }
 }

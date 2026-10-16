@@ -40,6 +40,9 @@ import { Account } from '../models/account';
             </div>
             <div class="account-actions">
               <span class="account-balance">{{ account.balance | currency }}</span>
+              <button class="btn-edit" (click)="editAccountModal(account.accountId!)" title="Edit Account">
+                <i class="edit"></i> Edit
+              </button>
               <button class="btn-delete" (click)="deleteAccountModal(account.accountId!)" title="Delete Account">
                 <i class="fas fa-trash"></i> Delete
               </button>
@@ -67,12 +70,25 @@ import { Account } from '../models/account';
     <h3>Delete Account</h3>
     <p>This action cannot be undone once deleted.</p>
     <div class="modal-actions">
-      <button class="btn-cancel" (click)="showDeleteModal = false">Cancel</button>
       <button class="btn-confirm-delete" (click)="deleteAccount(accountToDeleteId!)">Delete</button>
+      <button class="btn-cancel" (click)="showDeleteModal = false">Cancel</button>
     </div>
   </div>
 </div>
 }
+  <!-- Edit Account -->
+  @if (showEditModal) {
+    <div class="modal-overlay">
+      <div class="modal-content">
+        <h3>Edit Account</h3>
+        <div class="modal-actions">
+          <button class="btn-edit" (click)="editAccount(accountToEditId!)">Edit</button>
+          <button class="btn-cancel" (click)="showEditModal = false">Cancel</button>
+        </div>
+      </div>
+    </div>
+  }
+
 <!-- Add Account Modal -->
 @if (showAddModal && account) {
 <div class="modal-overlay">
@@ -81,7 +97,7 @@ import { Account } from '../models/account';
     <div class="form-group">
       <label for="accountType">Account Type</label>
       <select id="accountType" [(ngModel)]="account.accountType" class="form-control">
-        <option value="" disabled selected>Select an account type</option>
+        <option value="" disabled selected>Select Account</option>
         @for (type of accountTypes; track type) {
         <option [value]="type">{{ type.replace('_', ' ') | titlecase }}</option>
         }
@@ -92,7 +108,7 @@ import { Account } from '../models/account';
     <div class="form-group">
       <label for="nickname">Account Name</label>
       <input type="text" id="nickname" [(ngModel)]="account.nickname" class="form-control"
-        placeholder="e.g. exNameAccount">
+        placeholder="Cool Account Name">
     </div>
     <div class="form-group">
       <label for="balance">Current Balance</label>
@@ -136,511 +152,434 @@ import { Account } from '../models/account';
 </div>
 }`,
   styles: [`.dashboard-container {
-  min-height: 100vh;
-  background-color: #050505;
-  background-image: radial-gradient(circle at 10% 10%, rgba(30, 30, 30, 0.4) 0%, transparent 40%);
-  font-family: 'Inter', sans-serif;
-  color: var(--text-white);
-}
-
-.dashboard-nav {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 1.25rem 2rem;
-  background: rgba(5, 5, 5, 0.8);
-  -webkit-backdrop-filter: blur(12px);
-  backdrop-filter: blur(12px);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-  position: sticky;
-  top: 0;
-  z-index: 50;
-}
-
-.nav-brand h2 {
-  color: #fff;
-  font-weight: 700;
-  font-size: 1.5rem;
-  font-family: 'Outfit', sans-serif;
-  letter-spacing: -0.02em;
-}
-
-.nav-user {
-  display: flex;
-  align-items: center;
-  gap: 1.5rem;
-}
-
-.nav-user span {
-  color: #a0a0a0;
-  font-size: 0.9rem;
-  font-weight: 500;
-}
-
-.btn-logout {
-  background: rgba(220, 38, 38, 0.1);
-  color: #ef4444;
-  padding: 0.5rem 1.25rem;
-  border-radius: 8px;
-  text-decoration: none;
-  font-size: 0.85rem;
-  font-weight: 600;
-  border: 1px solid rgba(220, 38, 38, 0.2);
-  transition: all 0.3s ease;
-}
-
-.btn-logout:hover {
-  background: rgba(220, 38, 38, 0.2);
-  transform: translateY(-1px);
-}
-
-.dashboard-content {
-  padding: 2.5rem 2rem;
-  max-width: 1300px;
-  margin: 0 auto;
-  animation: fadeIn 0.6s ease-out;
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
+    min-height: 100vh;
+    background-color: #050505;
+    background-image: radial-gradient(circle at 10% 10%, rgba(30, 30, 30, 0.4) 0%, transparent 40%);
+    font-family: 'Inter', sans-serif;
+    color: white;
   }
 
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.dashboard-header {
-  margin-bottom: 3rem;
-}
-
-.dashboard-header h1 {
-  color: #ffffff;
-  font-size: 2.5rem;
-  font-weight: 700;
-  margin-bottom: 0.5rem;
-  letter-spacing: -0.02em;
-}
-
-.dashboard-header p {
-  color: #888;
-  font-size: 1.1rem;
-}
-
-.dashboard-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-  gap: 2rem;
-}
-
-.dashboard-card {
-  background: rgba(20, 20, 20, 0.6);
-  -webkit-backdrop-filter: blur(12px);
-  backdrop-filter: blur(12px);
-  padding: 2rem;
-  border-radius: 20px;
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  position: relative;
-  overflow: hidden;
-}
-
-/* Subtle gradient glow on hover */
-.dashboard-card::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-  opacity: 0;
-  transition: opacity 0.3s;
-}
-
-.dashboard-card:hover::after {
-  opacity: 1;
-}
-
-.dashboard-card h3 {
-  color: #a0a0a0;
-  font-size: 0.9rem;
-  text-transform: uppercase;
-  margin-bottom: 1rem;
-  font-weight: 600;
-  letter-spacing: 0.05em;
-}
-
-.balance {
-  color: #fff;
-  font-size: 3rem;
-  font-weight: 700;
-  margin: 0.5rem 0;
-  letter-spacing: -0.03em;
-  background: linear-gradient(135deg, #fff 0%, #ccc 100%);
-  background-clip: text;
-  -webkit-background-clip: text;
-  color: transparent;
-}
-
-.spending {
-  color: #FF4D6D;
-  font-size: 2.5rem;
-  font-weight: 700;
-  margin: 0.5rem 0;
-  letter-spacing: -0.03em;
-}
-
-.savings {
-  color: #4ADE80;
-  font-size: 2.25rem;
-  font-weight: 700;
-  margin: 0.5rem 0;
-  letter-spacing: -0.03em;
-}
-
-.trend {
-  font-size: 0.85rem;
-  font-weight: 600;
-  padding: 0.25rem 0.6rem;
-  border-radius: 20px;
-  display: inline-block;
-}
-
-.trend.positive {
-  color: #4ade80;
-  background: rgba(74, 222, 128, 0.1);
-}
-
-.trend.negative {
-  color: #ef4444;
-  background: rgba(239, 68, 68, 0.1);
-}
-
-.progress-bar {
-  background: rgba(255, 255, 255, 0.05);
-  border-radius: 10px;
-  height: 6px;
-  margin-top: 1.5rem;
-  overflow: hidden;
-}
-
-.progress {
-  background: linear-gradient(90deg, #4ade80 0%, #22c55e 100%);
-  height: 100%;
-  border-radius: 10px;
-  position: relative;
-}
-
-/* Shimmer on progress bar */
-.progress::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  bottom: 0;
-  right: 0;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
-  transform: translateX(-100%);
-  animation: shimmer 2s infinite;
-}
-
-@keyframes shimmer {
-  100% {
-    transform: translateX(100%);
-  }
-}
-
-.transaction-list {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-
-.transaction {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 1rem;
-  background: rgba(255, 255, 255, 0.02);
-  border-radius: 12px;
-  border: 1px solid rgba(255, 255, 255, 0.03);
-  transition: all 0.2s;
-}
-
-.transaction:hover {
-  background: rgba(255, 255, 255, 0.05);
-  transform: translateX(4px);
-}
-
-.transaction span:first-child {
-  color: #ccc;
-  font-weight: 500;
-}
-
-.transaction span:last-child {
-  font-weight: 600;
-  font-family: 'Outfit', sans-serif;
-}
-
-@media (max-width: 768px) {
   .dashboard-nav {
-    padding: 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.25rem 2rem;
+    background: rgba(5, 5, 5, 0.8);
+    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    position: sticky;
+    top: 0;
+    z-index: 50;
+  }
+
+  .nav-brand h2 {
+    color: #fff;
+    font-weight: 700;
+    font-size: 1.5rem;
+    font-family: 'Outfit', sans-serif;
+    letter-spacing: -0.02em;
+  }
+
+  .nav-user {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+  }
+
+  .nav-user span {
+    color: #a0a0a0;
+    font-size: 0.9rem;
+    font-weight: 500;
+  }
+
+  .btn-logout {
+    background: rgba(220, 38, 38, 0.1);
+    color: #ef4444;
+    padding: 0.5rem 1.25rem;
+    border-radius: 8px;
+    text-decoration: none;
+    font-size: 0.85rem;
+    font-weight: 600;
+    border: 1px solid rgba(220, 38, 38, 0.2);
+    transition: all 0.3s ease;
+  }
+
+  .btn-logout:hover {
+    background: rgba(220, 38, 38, 0.2);
+    transform: translateY(-1px);
   }
 
   .dashboard-content {
-    padding: 1.5rem 1rem;
+    padding: 2.5rem 2rem;
+    max-width: 1300px;
+    margin: 0 auto;
+    animation: fadeIn 0.6s ease-out;
   }
 
-  .dashboard-grid {
-    grid-template-columns: 1fr;
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .dashboard-header {
+    margin-bottom: 3rem;
   }
 
   .dashboard-header h1 {
-    font-size: 2rem;
+    color: #ffffff;
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    letter-spacing: -0.02em;
   }
-}
 
-/* Add Account Button */
-.btn-add-account {
-  background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
-  color: #fff;
-  padding: 0.75rem 1rem;
-  border-radius: 10px;
-  border: none;
-  font-size: 0.95rem;
-  font-weight: 600;
-  cursor: pointer;
-  margin-top: 1rem;
-  width: 25%;
-}
+  .dashboard-header p {
+    color: #888;
+    font-size: 1.1rem;
+  }
 
-.add-account-card p {
-  color: #888;
-  font-size: 0.9rem;
-  margin-bottom: 0.5rem;
-}
+  .dashboard-card {
+    background: rgba(20, 20, 20, 0.6);
+    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(12px);
+    padding: 2rem;
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    position: relative;
+    overflow: hidden;
+  }
 
-/* No data message */
-.no-data {
-  color: #666;
-  font-size: 0.95rem;
-  padding: 1rem 0;
-}
-
-/* Account Items */
-.accounts-list {
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-}
-
-.account-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 1rem;
-  background: rgba(255, 255, 255, 0.03);
-  border-radius: 12px;
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  transition: all 0.2s ease;
-}
-
-.account-item:hover {
-  background: rgba(255, 255, 255, 0.06);
-  transform: translateX(4px);
-}
-
-.account-info {
-  display: flex;
-  flex-direction: column;
-  gap: 0.25rem;
-}
-
-.account-name {
-  color: #fff;
-  font-weight: 600;
-  font-size: 1rem;
-}
-
-.account-type {
-  color: #666;
-  font-size: 0.8rem;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-}
-
-.account-balance {
-  color: #4ade80;
-  font-weight: 700;
-  font-size: 1.1rem;
-  font-family: 'Outfit', sans-serif;
-}
-
-.account-actions {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-}
-
-.btn-delete {
-  background: transparent;
-  border: 1px solid var(--bulls-red);
-  color: var(--bulls-red);
-  padding: 0.25rem 0.75rem;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: all 0.2s;
-  font-size: 0.8rem;
-}
-
-.btn-delete:hover {
-  background: var(--bulls-red);
-  color: white;
-}
-
-/* Animations */
-@keyframes fadeInSlide {
-  from {
+  /* Subtle gradient glow on hover */
+  .dashboard-card::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
     opacity: 0;
-    transform: translateY(-5px);
+    transition: opacity 0.3s;
   }
-  to {
+
+  .dashboard-card:hover::after {
     opacity: 1;
-    transform: translateY(0);
   }
-}
 
-.form-group.conditional {
-  animation: fadeInSlide 0.3s ease-out forwards;
-}
+  .dashboard-card h3 {
+    color: #a0a0a0;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+  }
 
-.text-muted {
-  display: block;
-  font-size: 0.8rem;
-  color: #888;
-  margin-top: 0.35rem;
-  font-style: italic;
-}
+  @keyframes shimmer {
+    100% {
+      transform: translateX(100%);
+    }
+  }
 
-/* Modal Styles */
-.modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.8);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
-  backdrop-filter: blur(4px);
-}
+  .transaction span:first-child {
+    color: #ccc;
+    font-weight: 500;
+  }
 
-.modal-content {
-  background: #1a1a1a;
-  padding: 2rem;
-  border-radius: 12px;
-  border: 1px solid var(--glass-border);
-  width: 90%;
-  max-width: 400px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
-}
+  .transaction span:last-child {
+    font-weight: 600;
+    font-family: 'Outfit', sans-serif;
+  }
 
-.modal-actions {
-  display: flex;
-  justify-content: flex-end;
-  gap: 1rem;
-  margin-top: 2rem;
-}
+  @media (max-width: 768px) {
+    .dashboard-nav {
+      padding: 1rem;
+    }
 
-.btn-cancel {
-  background: transparent;
-  border: 1px solid var(--text-gray);
-  color: var(--text-gray);
-  padding: 0.5rem 1rem;
-  border-radius: 6px;
-  cursor: pointer;
-}
+    .dashboard-content {
+      padding: 1.5rem 1rem;
+    }
 
-.btn-confirm-delete {
-  background: var(--bulls-red);
-  border: none;
-  color: white;
-  padding: 0.5rem 1rem;
-  border-radius: 6px;
-  border-radius: 6px;
-  cursor: pointer;
-}
+    .dashboard-header h1 {
+      font-size: 2rem;
+    }
+  }
 
-/* Form Styles */
-.form-group {
-  margin-bottom: 1.5rem;
-}
+  select#accountType.form-control {
+    width: 100%;
+    background-color: #1a1a1a;
+    color: #ffffff;
+    border: 1px solid #2e2e2e;
+    border-radius: 6px;
+    font-size: 1rem;
+    font-weight: 400;
+    cursor: pointer;
+    transition: border-color 0.15s ease;
+  }
 
-.form-row {
-  display: flex;
-  gap: 1rem;
-}
+  select#accountType.form-control:focus {
+    outline: none;
+    border-color: #555555;
+    box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.05);
+  }
 
-.half {
-  flex: 1;
-}
+  /* Add Account Button */
+  .btn-add-account {
+    background: #1a1a1a;
+    color: #fff;
+    padding: 0.75rem 1rem;
+    border-radius: 10px;
+    border: none;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 1rem;
+    width: 25%;
+    transition: background 0s ease, transform 0.1s ease, box-shadow 0.2s ease;
+  }
 
-.form-group label {
-  display: block;
-  margin-bottom: 0.5rem;
-  color: var(--text-gray);
-  font-size: 0.9rem;
-}
+  .btn-add-account:hover {
+    background: #262626;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  }
 
-.form-control {
-  width: 100%;
-  padding: 0.75rem;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 8px;
-  color: white;
-  font-family: inherit;
-  font-size: 1rem;
-  outline: none;
-  transition: border-color 0.2s;
-}
+  .btn-add-account:active {
+    transform: scale(0.98);
+  }
 
-.form-control:focus {
-  border-color: var(--bulls-red);
-}
+  .add-account-card p {
+    color: #888;
+    font-size: 0.9rem;
+    margin-bottom: 0.5rem;
+  }
 
-.form-control option {
-  background: #1a1a1a;
-  color: white;
-}
+  /* No data message */
+  .no-data {
+    color: #666;
+    font-size: 0.95rem;
+    padding: 1rem 0;
+  }
 
-.btn-confirm-add {
-  background: linear-gradient(135deg, #ce1141 0%, #8a0c2c 100%);
-  border: none;
-  color: white;
-  padding: 0.5rem 1.5rem;
-  border-radius: 6px;
-  cursor: pointer;
-  font-weight: 600;
-  box-shadow: 0 4px 12px rgba(206, 17, 65, 0.3);
-}
+  /* Account Items */
+  .accounts-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
 
-.btn-confirm-add:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 6px 16px rgba(206, 17, 65, 0.4);
-}
+  .account-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    transition: all 0.2s ease;
+  }
 
-.btn-confirm-add:disabled {
-  opacity: 0.7;
-  cursor: not-allowed;
-  transform: none;
-  box-shadow: none;
-}`]
+  .account-item:hover {
+    background: rgba(255, 255, 255, 0.06);
+    transform: translateX(4px);
+  }
+
+  .account-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .account-name {
+    color: #fff;
+    font-weight: 600;
+    font-size: 1rem;
+  }
+
+  .account-balance {
+    color: #4ade80;
+    margin-right: 5px;
+    font-weight: 700;
+    font-size: 1.1rem;
+    font-family: 'Outfit', sans-serif;
+  }
+
+  .account-actions {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .btn-edit {
+    background: transparent;
+    border: 0 solid black;
+    color: floralwhite;
+    padding: 0.25rem 0.75rem;
+    margin-right: -20px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 0.8rem;
+  }
+
+  .btn-edit:hover {
+    background: black;
+    color: white;
+  }
+
+  .btn-delete {
+    background: transparent;
+    border: 0 solid black;
+    color: floralwhite;
+    padding: 0.25rem 0.75rem;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 0.8rem;
+  }
+
+  .btn-delete:hover {
+    background: grey;
+    color: white;
+  }
+
+  /* Animations */
+  @keyframes fadeInSlide {
+    from {
+      opacity: 0;
+      transform: translateY(-5px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .form-group.conditional {
+    animation: fadeInSlide 0.3s ease-out forwards;
+  }
+
+  .text-muted {
+    display: block;
+    font-size: 0.8rem;
+    color: #888;
+    margin-top: 0.35rem;
+    font-style: italic;
+  }
+
+  /* Modal Styles */
+  .modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    backdrop-filter: blur(4px);
+  }
+
+  .modal-content {
+    background: #1a1a1a;
+    padding: 2rem;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0);
+    width: 90%;
+    max-width: 400px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  }
+
+  .modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+    margin-top: 2rem;
+  }
+
+  .btn-cancel {
+    background: transparent;
+    border: 1px solid grey;
+    color: grey;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    cursor: pointer;
+  }
+
+  .btn-confirm-delete {
+    background: darkred;
+    border: none;
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    cursor: pointer;
+  }
+
+  /* Form Styles */
+  .form-group {
+    margin-bottom: 1.5rem;
+  }
+
+  .form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: grey;
+    font-size: 0.9rem;
+  }
+
+  .form-control {
+    width: 100%;
+    padding: 0.75rem;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    color: white;
+    font-family: inherit;
+    font-size: 1rem;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  .form-control:focus {
+    border-color: darkred;
+  }
+
+  .form-control option {
+    background: #1a1a1a;
+    color: white;
+  }
+
+  .btn-confirm-add {
+    background: darkgray;
+    border: none;
+    color: white;
+    padding: 0.5rem 1.5rem;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    box-shadow: 0 4px 12px rgba(206, 17, 65, 0.3);
+  }
+
+  .btn-confirm-add:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 16px rgba(206, 17, 65, 0.4);
+  }
+
+  .btn-confirm-add:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+  }`]
 })
 export class DashboardComponent {
   accounts: Account[] = [];
@@ -649,8 +588,9 @@ export class DashboardComponent {
   private userId: number = 0;
   showAddModal: boolean = false;
   showDeleteModal: boolean = false;
+  showEditModal: boolean = false;
   accountToDeleteId: number | null = null;
-  submitted = false;
+  accountToEditId: number | null = null;
 
   account: Account | null = null;
   isLoading: boolean = false;
@@ -789,6 +729,48 @@ export class DashboardComponent {
   deleteAccountModal(accountId: number) {
     this.accountToDeleteId = accountId;
     this.showDeleteModal = true;
+  }
+
+  editAccount(accountId: number) {
+    this.isLoading = true;
+
+    this.accountService.editAccount(accountId, this.totalBalance).subscribe({
+      next: (editResponse) => {
+        this.ngZone.run(() => {
+          editResponse();
+          this.isLoading = false;
+          this.toastr.success('Account Updated');
+          this.loadAccounts()
+          this.cdr.detectChanges();
+        });
+      },
+      error: (error: HttpErrorResponse) => {
+        this.ngZone.run(() => {
+          console.error('Error updating account: ', error);
+          this.isLoading = false;
+          this.toastr.error('Failed to update account', 'Error');
+          this.cdr.detectChanges();
+        });
+      }
+    });
+  }
+
+  editAccountModal(accountId: number) {
+    this.accountToEditId = accountId;
+    this.account = {
+      balance: 0,
+    } as Account;
+    this.formattedBalance = '';
+    this.formattedMinPayment = '';
+    this.showEditModal = true;
+  }
+
+  closeEditAccountModal() {
+    this.showEditModal = false;
+    this.account = null;
+    this.formattedBalance = '';
+    this.formattedMinPayment = '';
+    this.isLoading = false;
   }
 
   formatBalance(event: Event) {
