@@ -66,9 +66,9 @@ public class AccountController {
     }
 
     @PutMapping("/{accountId}")
-    public ResponseEntity<AccountDTO> editAccount(@Valid @RequestBody AccountDTO accountDTO) {
+    public ResponseEntity<AccountDTO> editAccount(@PathVariable Long accountId, @Valid @RequestBody AccountDTO accountDTO) {
 
-        Account updatedAccount = accountService.editAccount(accountDTO.getBalance());
+        Account updatedAccount = accountService.editAccount(accountId, accountDTO.getBalance());
 
         return new ResponseEntity<>(mapToDTO(updatedAccount), HttpStatus.OK);
     }

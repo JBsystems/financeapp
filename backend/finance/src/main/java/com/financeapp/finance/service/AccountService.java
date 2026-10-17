@@ -5,6 +5,7 @@ import java.math.BigDecimal;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.boot.context.config.ConfigDataResourceNotFoundException;
 import org.springframework.stereotype.Service;
 
 import com.financeapp.finance.dto.AccountDTO;
@@ -84,13 +85,14 @@ public class AccountService {
 
     // Updates the specific account the user wants to edit
     @org.springframework.transaction.annotation.Transactional
-    public Account editAccount(BigDecimal balance) {
-        Account updateAccount = new Account();
+    public Account editAccount(Long accountId, BigDecimal balance) {
+            Account updateAccount = accountRepo.findByAccountId(accountId)
+                    .orElseThrow(() -> new AccountDoesNotExistException("Account not found" + accountId));
 
-        updateAccount.setBalance(balance);
+            updateAccount.setBalance(balance);
+            Account updatedAccount = accountRepo.save(updateAccount);
+            LOGGER.info("Users account updated");
 
-        Account updatedAccount = accountRepo.save(updateAccount);
-        LOGGER.info("Users account updated");
 
         return updatedAccount;
     }
