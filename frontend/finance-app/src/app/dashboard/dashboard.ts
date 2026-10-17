@@ -81,6 +81,9 @@ import { Account } from '../models/account';
     <div class="modal-overlay">
       <div class="modal-content">
         <h3>Edit Account</h3>
+        <label for="balance">Update Balance</label>
+        <input type="text" id="balance" [ngModel]="formattedBalance" (input)="formatBalance($event)" class="form-control"
+               placeholder="$0.00">
         <div class="modal-actions">
           <button class="btn-edit" (click)="editAccount(accountToEditId!)">Edit</button>
           <button class="btn-cancel" (click)="showEditModal = false">Cancel</button>
@@ -769,7 +772,6 @@ export class DashboardComponent {
     this.showEditModal = false;
     this.account = null;
     this.formattedBalance = '';
-    this.formattedMinPayment = '';
     this.isLoading = false;
   }
 
