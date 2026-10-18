@@ -49,8 +49,16 @@ public class AccountController {
 
     @GetMapping("/{accountId}")
     public ResponseEntity<AccountDTO> getAccount(@PathVariable Long accountId) {
-        Account account = accountService.getAccountById(accountId);
-        return ResponseEntity.ok(mapToDTO(account));
+        if (accountId == null) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        } else {
+            try {
+                Account account = accountService.getAccountById(accountId);
+                return ResponseEntity.ok(mapToDTO(account));
+            } catch (Exception e) {
+                return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+        }
     }
 
     @GetMapping("/user/{userId}")
@@ -67,7 +75,6 @@ public class AccountController {
 
     @PutMapping("/{accountId}")
     public ResponseEntity<AccountDTO> editAccount(@PathVariable Long accountId, @Valid @RequestBody AccountDTO accountDTO) {
-
         Account updatedAccount = accountService.editAccount(accountId, accountDTO.getBalance());
 
         return new ResponseEntity<>(mapToDTO(updatedAccount), HttpStatus.OK);

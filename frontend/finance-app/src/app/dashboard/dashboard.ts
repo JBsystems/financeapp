@@ -85,7 +85,7 @@ import { Account } from '../models/account';
         <input type="text" id="balance" [ngModel]="formattedBalance" (input)="formatBalance($event)" class="form-control"
                placeholder="$0.00">
         <div class="modal-actions">
-          <button class="btn-edit" (click)="editAccount(accountToEditId!)">Edit</button>
+          <button class="btn-edit" (click)="editAccount(accountToEditId!, totalBalance)">Update</button>
           <button class="btn-cancel" (click)="showEditModal = false">Cancel</button>
         </div>
       </div>
@@ -432,11 +432,6 @@ import { Account } from '../models/account';
     font-size: 0.8rem;
   }
 
-  .btn-edit:hover {
-    background: black;
-    color: white;
-  }
-
   .btn-delete {
     background: transparent;
     border: 0 solid black;
@@ -511,7 +506,6 @@ import { Account } from '../models/account';
 
   .btn-cancel {
     background: transparent;
-    border: 1px solid grey;
     color: grey;
     padding: 0.5rem 1rem;
     border-radius: 6px;
@@ -734,13 +728,13 @@ export class DashboardComponent {
     this.showDeleteModal = true;
   }
 
-  editAccount(accountId: number) {
-    this.isLoading = true;
-
-    this.accountService.editAccount(accountId, this.totalBalance).subscribe({
+  editAccount(accountId: number, balance: number) {
+    this.closeEditAccountModal();
+    this.accountService.editAccount(accountId, balance).subscribe({
       next: (editResponse) => {
         this.ngZone.run(() => {
           editResponse();
+          this.totalBalance = this.accounts.reduce((total, account) => total + account.balance, 0);
           this.isLoading = false;
           this.toastr.success('Account Updated');
           this.loadAccounts()

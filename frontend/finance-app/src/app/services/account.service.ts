@@ -23,7 +23,7 @@ export class AccountService {
         return this.http.delete<void>(`${this.apiUrl}/${accountId}`);
     }
 
-    editAccount(accountId: number, balance:number): Observable<any> {
-      return this.http.put(`${this.apiUrl}/${accountId}`, balance);
+    editAccount(accountId: number, totalBalance:number): Observable<any> {
+      return this.http.put(`${this.apiUrl}/${accountId}`, totalBalance);
     }
 }
