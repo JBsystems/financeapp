@@ -5,7 +5,6 @@ import java.math.BigDecimal;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.boot.context.config.ConfigDataResourceNotFoundException;
 import org.springframework.stereotype.Service;
 
 import com.financeapp.finance.dto.AccountDTO;
@@ -92,7 +91,6 @@ public class AccountService {
             updateAccount.setBalance(balance);
             Account updatedAccount = accountRepo.save(updateAccount);
             LOGGER.info("Users account updated");
-
 
         return updatedAccount;
     }

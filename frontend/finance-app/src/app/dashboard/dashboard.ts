@@ -506,10 +506,53 @@ import { Account } from '../models/account';
 
   .btn-cancel {
     background: transparent;
-    color: grey;
+    color: white;
     padding: 0.5rem 1rem;
+    border: none;
     border-radius: 6px;
     cursor: pointer;
+    overflow: hidden;
+    transition: all 0.3s ease;
+  }
+
+  .btn-primary {
+    background: transparent;
+    color: white;
+    padding: 1rem;
+    border: none;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    margin-top: 1rem;
+    font-family: 'Outfit', sans-serif;
+    letter-spacing: 0.02em;
+  }
+
+  /* Motion for the button */
+  .btn-cancel::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    transition: 0.5s;
+  }
+
+  .btn-cancel:hover {
+    transform: translateY(-2px);
+  }
+
+  .btn-cancel:hover::after {
+    left: 100%;
+  }
+
+  .btn-cancel:active {
+    transform: translateY(0);
   }
 
   .btn-confirm-delete {
@@ -556,19 +599,18 @@ import { Account } from '../models/account';
   }
 
   .btn-confirm-add {
-    background: darkgray;
+    background: transparent;
     border: none;
     color: white;
     padding: 0.5rem 1.5rem;
     border-radius: 6px;
     cursor: pointer;
     font-weight: 600;
-    box-shadow: 0 4px 12px rgba(206, 17, 65, 0.3);
   }
 
   .btn-confirm-add:hover {
     transform: translateY(-1px);
-    box-shadow: 0 6px 16px rgba(206, 17, 65, 0.4);
+    box-shadow: 0 6px 16px black;
   }
 
   .btn-confirm-add:disabled {
@@ -706,7 +748,7 @@ export class DashboardComponent {
   }
 
   showDueDay(type: string): boolean {
-    const dueDayTypes = ['MORTGAGE', 'RENT'];
+    const dueDayTypes = ['MORTGAGE', 'RENT', 'CREDIT_CARD', 'PERSONAL_LOAN', 'CAR_LOAN', 'AFFIRM', 'AFTER_PAY', 'KLARNA', 'SCHOOL_LOAN'];
     return dueDayTypes.includes(type);
   }
 
@@ -734,7 +776,7 @@ export class DashboardComponent {
       next: (editResponse) => {
         this.ngZone.run(() => {
           editResponse();
-          this.totalBalance = this.accounts.reduce((total, account) => total + account.balance, 0);
+          this.totalBalance = this.accounts.reduce((total, account) => account.balance, 0);
           this.isLoading = false;
           this.toastr.success('Account Updated');
           this.loadAccounts()

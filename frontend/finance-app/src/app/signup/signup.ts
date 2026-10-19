@@ -118,7 +118,7 @@ import { CommonModule } from '@angular/common';
   }
 
   .home-link {
-    color: var(--text-gray);
+    color: gray;
     text-decoration: none;
     font-size: 0.875rem;
     font-weight: 500;
@@ -129,7 +129,7 @@ import { CommonModule } from '@angular/common';
   }
 
   .home-link:hover {
-    color: var(--text-white);
+    color: white;
   }
 
   .auth-header {
@@ -149,7 +149,7 @@ import { CommonModule } from '@angular/common';
   }
 
   .auth-header p {
-    color: var(--text-gray);
+    color: gray;
     font-size: 1rem;
   }
 
@@ -166,7 +166,7 @@ import { CommonModule } from '@angular/common';
   }
 
   .form-group label {
-    color: var(--text-white);
+    color: white;
     font-size: 0.875rem;
     font-weight: 500;
     margin-left: 0.25rem;
@@ -186,7 +186,7 @@ import { CommonModule } from '@angular/common';
   .form-group input:focus {
     outline: none;
     background: rgba(255, 255, 255, 0.05);
-    border-color: var(--bulls-red);
+    border-color: red;
     box-shadow: 0 0 0 4px rgba(206, 17, 65, 0.1);
     transform: scale(1.01);
   }
@@ -196,7 +196,7 @@ import { CommonModule } from '@angular/common';
   }
 
   .btn-primary {
-    background: var(--bulls-red);
+    background: red;
     color: white;
     padding: 1rem;
     border: none;
@@ -226,7 +226,7 @@ import { CommonModule } from '@angular/common';
 
   .btn-primary:hover {
     transform: translateY(-2px);
-    box-shadow: 0 4px 20px rgba(206, 17, 65, 0.4);
+    box-shadow: 0 4px 20px red;
   }
 
   .btn-primary:hover::after {
@@ -255,12 +255,12 @@ import { CommonModule } from '@angular/common';
   }
 
   .auth-footer p {
-    color: var(--text-gray);
+    color: gray;
     font-size: 0.875rem;
   }
 
   .auth-footer a {
-    color: var(--text-white);
+    color: white;
     text-decoration: none;
     font-weight: 600;
     margin-left: 0.25rem;
@@ -268,7 +268,7 @@ import { CommonModule } from '@angular/common';
   }
 
   .auth-footer a:hover {
-    color: var(--bulls-red);
+    color: red;
     text-decoration: underline;
   }`]
 })

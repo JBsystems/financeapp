@@ -1,18 +1,12 @@
 package com.financeapp.finance.controller;
 
 import java.util.List;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import com.financeapp.finance.service.AuthService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.financeapp.finance.dto.AccountDTO;
 import com.financeapp.finance.model.Account;
@@ -25,6 +19,7 @@ import jakarta.validation.Valid;
 @RequestMapping("/api/v1/accounts")
 public class AccountController {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(AccountController.class);
     private final AccountService accountService;
     private final AuthService authService;
 
@@ -73,9 +68,10 @@ public class AccountController {
         return ResponseEntity.noContent().build();
     }
 
-    @PutMapping("/{accountId}")
+    @PatchMapping("/{accountId}")
     public ResponseEntity<AccountDTO> editAccount(@PathVariable Long accountId, @Valid @RequestBody AccountDTO accountDTO) {
         Account updatedAccount = accountService.editAccount(accountId, accountDTO.getBalance());
+        LOGGER.info("Users account not updated");
 
         return new ResponseEntity<>(mapToDTO(updatedAccount), HttpStatus.OK);
     }
