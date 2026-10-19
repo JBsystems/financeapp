@@ -515,23 +515,6 @@ import { Account } from '../models/account';
     transition: all 0.3s ease;
   }
 
-  .btn-primary {
-    background: transparent;
-    color: white;
-    padding: 1rem;
-    border: none;
-    border-radius: 12px;
-    font-weight: 600;
-    font-size: 1rem;
-    cursor: pointer;
-    position: relative;
-    overflow: hidden;
-    transition: all 0.3s ease;
-    margin-top: 1rem;
-    font-family: 'Outfit', sans-serif;
-    letter-spacing: 0.02em;
-  }
-
   /* Motion for the button */
   .btn-cancel::after {
     content: '';
