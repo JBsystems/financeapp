@@ -780,6 +780,7 @@ export class DashboardComponent {
   editAccountModal(accountId: number) {
     this.accountToEditId = accountId;
     this.account = {
+      userId: this.userId,
       balance: 0,
     } as Account;
     this.formattedBalance = '';

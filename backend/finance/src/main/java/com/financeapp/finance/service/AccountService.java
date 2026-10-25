@@ -86,7 +86,7 @@ public class AccountService {
     @org.springframework.transaction.annotation.Transactional
     public Account editAccount(Long accountId, BigDecimal balance) {
             Account updateAccount = accountRepo.findByAccountId(accountId)
-                    .orElseThrow(() -> new AccountDoesNotExistException("Account not found" + accountId));
+                    .orElseThrow(() -> new AccountDoesNotExistException("Account not found"));
 
             updateAccount.setBalance(balance);
             Account updatedAccount = accountRepo.save(updateAccount);
