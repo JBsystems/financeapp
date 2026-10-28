@@ -81,13 +81,25 @@ import { Account } from '../models/account';
     <div class="modal-overlay">
       <div class="modal-content">
         <h3>Edit Account</h3>
+
         <label for="balance">Update Balance</label>
-        <input type="text" id="balance" [ngModel]="formattedBalance" (input)="formatBalance($event)" class="form-control"
+        <input type="text"
+               id="balance"
+               [(ngModel)]="formattedBalance"
+               (input)="formatBalance($event)"
+               class="form-control"
                placeholder="$0.00">
+
         <div class="modal-actions">
-          <button class="btn-edit" (click)="editAccount(accountToEditId!, totalBalance)" [disabled]="isLoading">Update</button>
-          <button class="btn-cancel" (click)="showEditModal = false">Cancel</button>
+          <button class="btn-cancel" (click)="closeAddAccountModal()">Cancel</button>
+
+          <button class="btn-edit"
+                  (click)="editAccount(accountToEditId!, totalBalance)"
+                  [disabled]="isLoading">
+            @if (isLoading) { Updating... } @else { Update Account }
+          </button>
         </div>
+
       </div>
     </div>
   }
@@ -758,10 +770,11 @@ export class DashboardComponent {
     this.isLoading = true;
     this.closeEditAccountModal();
 
+
     this.accountService.editAccount(this.userId, accountId, balance).subscribe({
-      next: (editResponse) => {
+      next: () => {
         this.ngZone.run(() => {
-          console.log(editResponse());
+          console.log("user account updated");
           this.isLoading = false;
           this.toastr.success('Account Updated');
           this.loadAccounts()
@@ -791,7 +804,7 @@ export class DashboardComponent {
   }
 
   closeEditAccountModal() {
-    this.showEditModal = false;
+    this.showAddModal = false;
     this.account = null;
     this.formattedBalance = '';
     this.isLoading = false;

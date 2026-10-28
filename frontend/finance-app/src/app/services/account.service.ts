@@ -24,6 +24,6 @@ export class AccountService {
     }
 
     editAccount(userId: number, accountId: number, balance:number): Observable<any> {
-      return this.http.patch(`${this.apiUrl}/user/${userId}/${accountId}`, balance);
+      return this.http.patch(`${this.apiUrl}/${userId}/${accountId}`, balance);
     }
 }
