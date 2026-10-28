@@ -2,6 +2,7 @@ package com.financeapp.finance.service;
 
 import java.util.List;
 import java.math.BigDecimal;
+import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -84,8 +85,8 @@ public class AccountService {
 
     // Updates the specific account the user wants to edit
     @org.springframework.transaction.annotation.Transactional
-    public Account editAccount(Long accountId, BigDecimal balance) {
-            Account updateAccount = accountRepo.findByAccountId(accountId)
+    public Account editAccount(User user, Long accountId, BigDecimal balance) {
+            Account updateAccount = accountRepo.findByUserAndAccountId(user, accountId)
                     .orElseThrow(() -> new AccountDoesNotExistException("Account not found"));
 
             updateAccount.setBalance(balance);
@@ -94,4 +95,5 @@ public class AccountService {
 
         return updatedAccount;
     }
+
 }

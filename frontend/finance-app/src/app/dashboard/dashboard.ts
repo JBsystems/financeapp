@@ -85,7 +85,7 @@ import { Account } from '../models/account';
         <input type="text" id="balance" [ngModel]="formattedBalance" (input)="formatBalance($event)" class="form-control"
                placeholder="$0.00">
         <div class="modal-actions">
-          <button class="btn-edit" (click)="editAccount(accountToEditId!, totalBalance)">Update</button>
+          <button class="btn-edit" (click)="editAccount(accountToEditId!, totalBalance)" [disabled]="isLoading">Update</button>
           <button class="btn-cancel" (click)="showEditModal = false">Cancel</button>
         </div>
       </div>
@@ -754,12 +754,14 @@ export class DashboardComponent {
   }
 
   editAccount(accountId: number, balance: number) {
+    if (this.isLoading) return;
+    this.isLoading = true;
     this.closeEditAccountModal();
-    this.accountService.editAccount(accountId, balance).subscribe({
+
+    this.accountService.editAccount(this.userId, accountId, balance).subscribe({
       next: (editResponse) => {
         this.ngZone.run(() => {
-          editResponse();
-          this.totalBalance = this.accounts.reduce((total, account) => account.balance, 0);
+          console.log(editResponse());
           this.isLoading = false;
           this.toastr.success('Account Updated');
           this.loadAccounts()

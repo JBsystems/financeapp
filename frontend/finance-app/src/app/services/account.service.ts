@@ -23,7 +23,7 @@ export class AccountService {
         return this.http.delete<void>(`${this.apiUrl}/${accountId}`);
     }
 
-    editAccount(accountId: number, balance:number): Observable<any> {
-      return this.http.patch(`${this.apiUrl}/${accountId}`, balance);
+    editAccount(userId: number, accountId: number, balance:number): Observable<any> {
+      return this.http.patch(`${this.apiUrl}/user/${userId}/${accountId}`, balance);
     }
 }

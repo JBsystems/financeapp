@@ -68,9 +68,9 @@ public class AccountController {
         return ResponseEntity.noContent().build();
     }
 
-    @PatchMapping("/{accountId}")
-    public ResponseEntity<AccountDTO> editAccount(@PathVariable Long accountId, @Valid @RequestBody AccountDTO accountDTO) {
-        Account updatedAccount = accountService.editAccount(accountId, accountDTO.getBalance());
+    @PatchMapping("/user/{userId}/{accountId}")
+    public ResponseEntity<AccountDTO> editAccount(@PathVariable("userId") User user, Long accountId, @Valid @RequestBody AccountDTO accountDTO) {
+        Account updatedAccount = accountService.editAccount(user, accountId, accountDTO.getBalance());
         LOGGER.info("Users account not updated");
 
         return new ResponseEntity<>(mapToDTO(updatedAccount), HttpStatus.OK);
