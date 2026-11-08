@@ -2,7 +2,6 @@ package com.financeapp.finance.service;
 
 import java.util.List;
 import java.math.BigDecimal;
-import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -83,7 +82,7 @@ public class AccountService {
         LOGGER.info("Account {} deleted successfully", accountId);
     }
 
-    // Updates the specific account the user wants to edit
+    // Updates the specific account balance the user wants to edit
     @org.springframework.transaction.annotation.Transactional
     public Account editAccount(User user, Long accountId, BigDecimal balance) {
             Account updateAccount = accountRepo.findByUserAndAccountId(user, accountId)
