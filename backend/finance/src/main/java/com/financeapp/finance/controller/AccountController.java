@@ -74,9 +74,10 @@ public class AccountController {
 
         try {
             Account updatedAccount = accountService.editAccount(accountDTO.getBalance(), user, accountId);
-            log.info("Users account updated");
+            log.info("User's account updated");
             return ResponseEntity.ok(mapToDTO(updatedAccount));
         } catch (Exception e) {
+            log.info("User's account not updated");
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
