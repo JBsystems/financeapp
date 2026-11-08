@@ -1,9 +1,9 @@
 package com.financeapp.finance.controller;
 
 import java.util.List;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
 import com.financeapp.finance.service.AuthService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,11 +15,11 @@ import com.financeapp.finance.service.AccountService;
 
 import jakarta.validation.Valid;
 
+@Slf4j
 @RestController
 @RequestMapping("/api/v1/accounts")
 public class AccountController {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(AccountController.class);
     private final AccountService accountService;
     private final AuthService authService;
 
@@ -72,10 +72,13 @@ public class AccountController {
     public ResponseEntity<AccountDTO> editAccount(@PathVariable Long accountId, @Valid @RequestBody AccountDTO accountDTO) {
         User user = authService.getUserById(accountDTO.getUserId());
 
-        Account updatedAccount = accountService.editAccount(user, accountId, accountDTO.getBalance());
-        LOGGER.info("Users account not updated");
-
-        return new ResponseEntity<>(mapToDTO(updatedAccount), HttpStatus.OK);
+        try {
+            Account updatedAccount = accountService.editAccount(accountDTO.getBalance(), user, accountId);
+            log.info("Users account updated");
+            return ResponseEntity.ok(mapToDTO(updatedAccount));
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
     }
 
 

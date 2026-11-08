@@ -3,8 +3,7 @@ package com.financeapp.finance.service;
 import java.util.List;
 import java.math.BigDecimal;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import com.financeapp.finance.dto.AccountDTO;
@@ -14,11 +13,11 @@ import com.financeapp.finance.model.AccountType;
 import com.financeapp.finance.model.User;
 import com.financeapp.finance.repositories.AccountRepository;
 
+@Slf4j
 @Service
 public class AccountService {
 
     private final AccountRepository accountRepo;
-    private static final Logger LOGGER = LoggerFactory.getLogger(AccountService.class);
 
     public AccountService(AccountRepository accountRepo) {
         this.accountRepo = accountRepo;
@@ -52,7 +51,7 @@ public class AccountService {
 
         Account savedAccount = accountRepo.save(newAccount);
 
-        LOGGER.info("Account {} created successfully", savedAccount.getAccountId());
+        log.info("Account {} created successfully", savedAccount.getAccountId());
 
         return savedAccount;
     }
@@ -60,9 +59,9 @@ public class AccountService {
     public void validateAccountType(String accountTypeString) {
         try {
             AccountType type = AccountType.valueOf(accountTypeString.toUpperCase());
-            LOGGER.info("Valid account type: " + type);
+            log.info("Valid account type: {}", type);
         } catch (IllegalArgumentException e) {
-            LOGGER.info("Invalid account type: " + accountTypeString);
+            log.info("Invalid account type: {}", accountTypeString);
             throw new AccountDoesNotExistException("This account type is not valid");
         }
     }
@@ -79,18 +78,18 @@ public class AccountService {
             throw new AccountDoesNotExistException();
         }
         accountRepo.deleteById(accountId);
-        LOGGER.info("Account {} deleted successfully", accountId);
+        log.info("Account {} deleted successfully", accountId);
     }
 
     // Updates the specific account balance the user wants to edit
     @org.springframework.transaction.annotation.Transactional
-    public Account editAccount(User user, Long accountId, BigDecimal balance) {
+    public Account editAccount(BigDecimal balance, User user, Long accountId) {
             Account updateAccount = accountRepo.findByUserAndAccountId(user, accountId)
                     .orElseThrow(() -> new AccountDoesNotExistException("Account not found"));
 
             updateAccount.setBalance(balance);
             Account updatedAccount = accountRepo.save(updateAccount);
-            LOGGER.info("Users account updated");
+            log.info("Users account updated");
 
         return updatedAccount;
     }
